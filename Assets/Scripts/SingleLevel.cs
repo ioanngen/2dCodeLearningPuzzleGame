@@ -15,12 +15,12 @@ public class SingleLevel : MonoBehaviour
     {
         currentStarsNum = _starsNum;
 
-        if(currentStarsNum > PlayerPrefs.GetInt(levelIndex + "_Level"))
+        if(currentStarsNum > PlayerPrefs.GetInt("Lv" + levelIndex))
         {
-            PlayerPrefs.SetInt(levelIndex + "_Level", _starsNum);
+            PlayerPrefs.SetInt("Lv" + levelIndex, _starsNum);
         }
 
-        Debug.Log(PlayerPrefs.GetInt(levelIndex + "_Level"));
+        Debug.Log(PlayerPrefs.GetInt("Lv" + levelIndex));
 
         BackButton();
     }

@@ -13,7 +13,7 @@ public class LevelSelection : MonoBehaviour
 
     private void Start()
     {
-        PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
     }
 
     private void Update()
@@ -25,9 +25,15 @@ public class LevelSelection : MonoBehaviour
     private void UpdateLevelStatus()
     {
         int previousLevelNum = int.Parse(gameObject.name) - 1;
-        if (PlayerPrefs.GetInt("Lv" + previousLevelNum.ToString()) > 0)
+        if (PlayerPrefs.GetInt("Lv" + previousLevelNum.ToString()) > 0 && !unlocked)
         {
             unlocked = true;
+
+            UnlockAnimation anim = GetComponent<UnlockAnimation>();
+            if (anim != null)
+            {
+                anim.Play();
+            }
         }
     }
 
@@ -58,9 +64,19 @@ public class LevelSelection : MonoBehaviour
 
     public void PressSelection(string _LevelName)
     {
-        if(unlocked)
+        if (unlocked)
         {
-            SceneManager.LoadScene(_LevelName);
+            if (LivesManager.instance.HasLives())
+            {
+                LivesManager.instance.LoseLife();
+                SceneManager.LoadScene(_LevelName);
+            }
+            else
+            {
+                Debug.Log("No lives left!");
+                if (NoLivesPopup.instance != null)
+                    NoLivesPopup.instance.Show();
+            }
         }
     }
 
