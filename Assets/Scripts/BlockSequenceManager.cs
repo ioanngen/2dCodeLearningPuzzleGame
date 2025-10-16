@@ -4,24 +4,22 @@ using System.Collections.Generic;
 public class BlockSequenceManager : MonoBehaviour
 {
     [Header("Settings")]
-    public bool requireCorrectOrder = true;  // toggle strict order
-    public Transform snapContainer;          // where blocks snap (with LayoutGroup)
+    public bool requireCorrectOrder = true;
+    public Transform snapContainer;
 
     [Header("Correct Order")]
-    public List<int> correctOrder;           // list of expected blockIDs
+    public List<int> correctOrder;
 
     private List<BlockDragHandler> snappedBlocks = new List<BlockDragHandler>();
 
     public bool TrySnap(BlockDragHandler block)
     {
-        // Prevent duplicate snap
         if (snappedBlocks.Contains(block))
             return false;
 
         int nextIndex = snappedBlocks.Count;
         bool canSnap = true;
 
-        // If strict order enabled, check if block matches expected ID
         if (requireCorrectOrder)
         {
             if (nextIndex >= correctOrder.Count || block.blockID != correctOrder[nextIndex])
@@ -30,7 +28,6 @@ public class BlockSequenceManager : MonoBehaviour
 
         if (canSnap)
         {
-            // Parent under snapContainer and let VerticalLayoutGroup handle positioning
             block.transform.SetParent(snapContainer, false);
             snappedBlocks.Add(block);
             return true;
@@ -58,7 +55,6 @@ public class BlockSequenceManager : MonoBehaviour
         GameManager.instance.EndLevel(success);
     }
 
-    // Optional: reset snapped blocks (e.g. on Try Again)
     public void ResetSequence()
     {
         foreach (var block in snappedBlocks)

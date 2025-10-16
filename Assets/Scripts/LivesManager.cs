@@ -1,57 +1,64 @@
-using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
+using System;
 
 public class LivesManager : MonoBehaviour
 {
-    public static LivesManager instance;
+    public static LivesManager Instance;
 
-    [Header("Lives Settings")]
     public int maxLives = 5;
-    public int currentLives = 5;
-    public float lifeRegenSeconds = 20f * 60f; // 20 minutes
+    public int currentLives;
+    public float regenTime = 1200f; // 20 minutes
+    private DateTime nextLifeTime;
 
-    [Header("UI (assign in Map scene)")]
-    public TextMeshProUGUI livesText;
-    public TextMeshProUGUI timerText;
-    public GameObject clockIcon; // toggled when lives < max
+    [Header("UI References (Map Scene Only)")]
+    public TMP_Text livesText;
+    public TMP_Text timerText;
+    public GameObject timerPanel;
 
-    private DateTime nextLifeTime; // when the next life will be granted
-
-    void Awake()
+    private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
+            LoadLivesData();
         }
         else
         {
             Destroy(gameObject);
-            return;
         }
     }
 
-    void Start()
+    private void Start()
     {
-        LoadLives();
-        UpdateUI();
-    }
-
-    void Update()
-    {
-        if (currentLives < maxLives)
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        if (SceneManager.GetActiveScene().name == "MainMenu")
         {
-            if (DateTime.Now >= nextLifeTime)
-            {
-                // add one life (could add more if lot of time passed)
-                AddLife();
-            }
-            else
-            {
-                UpdateTimerUI();
-            }
+            FindUIReferences();
+            UpdateUI();
         }
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "MainMenu")
+        {
+            FindUIReferences();
+            UpdateUI();
+        }
+    }
+
+    private void Update()
+    {
+        HandleRegeneration();
+        UpdateUI();
     }
 
     public bool HasLives()
@@ -59,95 +66,99 @@ public class LivesManager : MonoBehaviour
         return currentLives > 0;
     }
 
-    // call when the player should lose a life (on level fail or exit-per-request)
     public void LoseLife()
     {
-        if (currentLives <= 0) return;
-        currentLives--;
-        if (currentLives < maxLives)
+        if (currentLives > 0)
         {
-            // start countdown for next life if not already
-            nextLifeTime = DateTime.Now.AddSeconds(lifeRegenSeconds);
-            PlayerPrefs.SetString("NextLifeTime", nextLifeTime.ToString());
+            currentLives--;
+
+            SaveLivesData();
+            UpdateUI();
         }
-        SaveLives();
-        UpdateUI();
     }
 
-    private void AddLife()
+    private void HandleRegeneration()
     {
-        if (currentLives >= maxLives) return;
-
-        // calculate how many full life intervals passed
-        string saved = PlayerPrefs.GetString("NextLifeTime", string.Empty);
-        DateTime savedNext = string.IsNullOrEmpty(saved) ? DateTime.Now : DateTime.Parse(saved);
-        TimeSpan passed = DateTime.Now - (savedNext - TimeSpan.FromSeconds(lifeRegenSeconds));
-        double totalSecondsPassed = (DateTime.Now - savedNext + TimeSpan.FromSeconds(lifeRegenSeconds)).TotalSeconds;
-        // simpler: add 1 then set nextLifeTime = now + interval if still not full
-        currentLives++;
         if (currentLives < maxLives)
         {
-            nextLifeTime = DateTime.Now.AddSeconds(lifeRegenSeconds);
-            PlayerPrefs.SetString("NextLifeTime", nextLifeTime.ToString());
+            if (DateTime.Now >= nextLifeTime)
+            {
+                currentLives++;
+                SaveLivesData();
+
+                if (currentLives < maxLives)
+                    nextLifeTime = DateTime.Now.AddSeconds(regenTime);
+
+                UpdateUI();
+            }
+
+            TimeSpan remaining = nextLifeTime - DateTime.Now;
+            if (timerText != null)
+                timerText.text = $"{remaining.Minutes:D2}:{remaining.Seconds:D2}";
         }
         else
         {
-            PlayerPrefs.DeleteKey("NextLifeTime");
+            if (timerPanel != null)
+                timerPanel.SetActive(false);
         }
-        SaveLives();
-        UpdateUI();
     }
 
-    private void UpdateTimerUI()
+    public void AddLife()
     {
-        if (timerText == null || clockIcon == null) return;
-        TimeSpan remaining = nextLifeTime - DateTime.Now;
-        if (remaining.TotalSeconds < 0) remaining = TimeSpan.Zero;
-        timerText.text = string.Format("{0:D2}:{1:D2}", remaining.Minutes, remaining.Seconds);
-        clockIcon.SetActive(true);
+        if (currentLives < maxLives)
+        {
+            currentLives++;
+            SaveLivesData();
+            UpdateUI();
+        }
     }
 
     private void UpdateUI()
     {
-        if (livesText != null) livesText.text = $"{currentLives}/{maxLives}";
+        if (livesText != null)
+            livesText.text = currentLives.ToString();
 
-        if (currentLives >= maxLives)
+        if (timerPanel != null)
+            timerPanel.SetActive(currentLives < maxLives);
+    }
+
+    private void LoadLivesData()
+    {
+        currentLives = PlayerPrefs.GetInt("CurrentLives", maxLives);
+        string nextLifeTimeStr = PlayerPrefs.GetString("NextLifeTime", "");
+
+        if (!string.IsNullOrEmpty(nextLifeTimeStr) &&
+            DateTime.TryParse(nextLifeTimeStr, out DateTime savedTime))
         {
-            if (timerText != null) timerText.text = "Full";
-            if (clockIcon != null) clockIcon.SetActive(false);
+            nextLifeTime = savedTime;
         }
         else
         {
-            UpdateTimerUI();
+            nextLifeTime = DateTime.Now.AddSeconds(regenTime);
         }
     }
 
-    private void SaveLives()
+    private void SaveLivesData()
     {
-        PlayerPrefs.SetInt("PlayerLives", currentLives);
+        PlayerPrefs.SetInt("CurrentLives", currentLives);
+        PlayerPrefs.SetString("NextLifeTime", nextLifeTime.ToString());
         PlayerPrefs.Save();
     }
 
-    private void LoadLives()
+    private void FindUIReferences()
     {
-        currentLives = PlayerPrefs.GetInt("PlayerLives", maxLives);
-        string next = PlayerPrefs.GetString("NextLifeTime", string.Empty);
-        if (!string.IsNullOrEmpty(next))
-        {
-            nextLifeTime = DateTime.Parse(next);
-        }
-        else
-        {
-            nextLifeTime = DateTime.Now;
-        }
-    }
+        // Find UI only in the Map scene
+        var livesObj = GameObject.FindWithTag("LivesText");
+        var timerObj = GameObject.FindWithTag("TimerText");
+        var panelObj = GameObject.FindWithTag("TimerPanel");
 
-    // optional helper to force set values (not used automatically)
-    public void SetLives(int v)
-    {
-        currentLives = Mathf.Clamp(v, 0, maxLives);
-        if (currentLives < maxLives) nextLifeTime = DateTime.Now.AddSeconds(lifeRegenSeconds);
-        SaveLives();
-        UpdateUI();
+        if (livesObj != null)
+            livesText = livesObj.GetComponent<TMP_Text>();
+
+        if (timerObj != null)
+            timerText = timerObj.GetComponent<TMP_Text>();
+
+        if (panelObj != null)
+            timerPanel = panelObj;
     }
 }

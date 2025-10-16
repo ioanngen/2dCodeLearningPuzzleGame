@@ -4,11 +4,10 @@ using UnityEngine.UI;
 
 public class UnlockAnimation : MonoBehaviour
 {
-    public GameObject[] dots; // assign dot images in order on the road
-    public Button levelButton; // the button that becomes interactable after animation
+    public GameObject[] dots;
+    public Button levelButton;
     public float dotDelay = 0.16f;
 
-    // play from external
     public IEnumerator ShowDotsCoroutine()
     {
         if (levelButton != null) levelButton.interactable = false;

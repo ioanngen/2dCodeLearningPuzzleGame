@@ -14,13 +14,12 @@ public class SettingsManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // Load saved values
             musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
             sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
         }
         else
         {
-            Destroy(gameObject); // Only one allowed
+            Destroy(gameObject);
         }
     }
 
@@ -30,7 +29,6 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetFloat("MusicVolume", value);
         PlayerPrefs.Save();
 
-        // If you have an AudioManager, update it here:
         // AudioManager.instance.UpdateMusicVolume(value);
     }
 

@@ -15,7 +15,7 @@ public class UnlockController : MonoBehaviour
         string last = PlayerPrefs.GetString("LastCompletedLevel", "");
         if (string.IsNullOrEmpty(last)) yield break;
 
-        int lastIndex = int.Parse(last); // assumes level scenes are named "1","2",...
+        int lastIndex = int.Parse(last);
         int nextIndex = lastIndex + 1;
 
         int loadNextFlag = PlayerPrefs.GetInt("LoadNextLevel", 0);
@@ -29,13 +29,11 @@ public class UnlockController : MonoBehaviour
             }
         }
 
-        // reset flag if present
         if (loadNextFlag == 1)
         {
             PlayerPrefs.SetInt("LoadNextLevel", 0);
             PlayerPrefs.Save();
 
-            // load next level scene by name (assumes numeric names "1","2"...)
             SceneManager.LoadScene(nextIndex.ToString());
         }
     }

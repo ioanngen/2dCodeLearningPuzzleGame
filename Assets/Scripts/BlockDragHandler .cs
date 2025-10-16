@@ -49,7 +49,6 @@ public class BlockDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
         if (!snapped)
         {
-            // return to origin
             transform.SetParent(originalParent);
             rect.anchoredPosition = originalAnchoredPos;
         }

@@ -8,76 +8,84 @@ public class GameManager : MonoBehaviour
 
     [Header("UI References")]
     public GameObject resultPanel;
-    public GameObject overlayPanel;
+    public GameObject Panel;
     public Text resultText;
     public Text timeText;
-    public Image[] starImages; // 3 stars
+    public Image[] starImages;   // 3 stars
     public Sprite starOn;
     public Sprite starOff;
     public Button tryAgainButton;
     public Button nextLevelButton;
     public Button exitButton;
 
+
     private float levelStartTime;
     private bool levelEnded = false;
-    private bool success = false;  // remember result
-    private int stars = 0;
+    private bool levelSuccess = false;
 
-    void Awake()
+    private void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         instance = this;
     }
 
-    void Start()
+    private void Start()
     {
         levelStartTime = Time.time;
-        resultPanel.SetActive(false);
-        overlayPanel.SetActive(false);
+        if (resultPanel != null)
+            resultPanel.SetActive(false);
 
-        // Wire buttons
-        tryAgainButton.onClick.AddListener(RetryLevel);
-        nextLevelButton.onClick.AddListener(NextLevel);
-        exitButton.onClick.AddListener(ExitToMap);
+        // Button listeners
+        if (tryAgainButton != null) tryAgainButton.onClick.AddListener(TryAgain);
+        if (nextLevelButton != null) nextLevelButton.onClick.AddListener(NextLevel);
     }
 
-    public void EndLevel(bool successResult)
+    public void EndLevel(bool success)
     {
         if (levelEnded) return;
         levelEnded = true;
-        success = successResult;
+        levelSuccess = success;
 
         float timeTaken = Time.time - levelStartTime;
         resultPanel.SetActive(true);
-        overlayPanel.SetActive(true);
+        Panel.SetActive(true);
 
         if (success)
         {
             resultText.text = "Level Complete!";
-            timeText.text = $"Time: {timeTaken:F2} seconds";
+            timeText.text = $"Time: {timeTaken:F1}s";
 
-            stars = CalculateStars(timeTaken);
+            int stars = CalculateStars(timeTaken);
             for (int i = 0; i < starImages.Length; i++)
                 starImages[i].sprite = (i < stars) ? starOn : starOff;
+
+            
+            string currentLevel = SceneManager.GetActiveScene().name;
+            int prevStars = PlayerPrefs.GetInt("Lv" + currentLevel, 0);
+            if (stars > prevStars)
+            {
+                PlayerPrefs.SetInt("Lv" + currentLevel, stars);
+                PlayerPrefs.Save();
+            }
 
             tryAgainButton.gameObject.SetActive(false);
             nextLevelButton.gameObject.SetActive(true);
         }
         else
         {
-            resultText.text = $"Try Again\nLives Left: {LivesManager.instance.currentLives}";
+            resultText.text = "Try Again!";
             timeText.text = "";
 
-            foreach (var star in starImages)
-                star.sprite = starOff;
+            foreach (var img in starImages)
+                img.sprite = starOff;
 
             tryAgainButton.gameObject.SetActive(true);
             nextLevelButton.gameObject.SetActive(false);
         }
-
-        // Save stars for this level
-        string currentLevel = SceneManager.GetActiveScene().name;
-        PlayerPrefs.SetInt("Lv" + currentLevel, stars);
-        PlayerPrefs.Save();
     }
 
     private int CalculateStars(float time)
@@ -87,34 +95,30 @@ public class GameManager : MonoBehaviour
         return 1;
     }
 
-    // 🔹 Button Handlers
-    public void RetryLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
     public void NextLevel()
     {
-        SceneManager.LoadScene("MainMenu"); // Loads map, animation can play there
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void TryAgain()
+    {
+        if (LivesManager.Instance != null)
+            LivesManager.Instance.LoseLife();
+
+        if (LivesManager.Instance.HasLives())
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 
     public void ExitToMap()
     {
-        // Case 1: Player hasn’t run yet (no result panel shown)
-        if (!levelEnded)
-        {
-            LivesManager.instance.LoseLife();
-        }
-        else
-        {
-            // Case 2: Level ended
-            if (!success)
-            {
-                // Failure → lose life
-                LivesManager.instance.LoseLife();
-            }
-            // Success → no life lost
-        }
+        if (!levelSuccess && LivesManager.Instance != null)
+            LivesManager.Instance.LoseLife();
 
         SceneManager.LoadScene("MainMenu");
     }

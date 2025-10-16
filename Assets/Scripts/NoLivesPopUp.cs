@@ -7,7 +7,7 @@ public class NoLivesPopup : MonoBehaviour
     void Awake()
     {
         instance = this;
-        gameObject.SetActive(false); // hidden at start
+        gameObject.SetActive(false);
     }
 
     public void Show()

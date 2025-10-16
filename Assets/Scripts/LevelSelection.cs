@@ -62,22 +62,18 @@ public class LevelSelection : MonoBehaviour
         }
     }
 
-    public void PressSelection(string _LevelName)
+    public void PressSelection(string levelName)
     {
-        if (unlocked)
-        {
-            if (LivesManager.instance.HasLives())
-            {
-                LivesManager.instance.LoseLife();
-                SceneManager.LoadScene(_LevelName);
-            }
-            else
-            {
-                Debug.Log("No lives left!");
-                if (NoLivesPopup.instance != null)
-                    NoLivesPopup.instance.Show();
-            }
-        }
-    }
+        if (!unlocked)
+            return;
 
+        if (!LivesManager.Instance.HasLives())
+        {
+            Debug.Log("No lives left! Wait for regeneration.");
+            // TODO: Show UI message panel for "No lives left"
+            return;
+        }
+
+        SceneManager.LoadScene(levelName);
+    }
 }

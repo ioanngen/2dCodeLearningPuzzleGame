@@ -29,7 +29,6 @@ public class HomeUI : MonoBehaviour
             continueButton.SetActive(false);
     }
 
-
     public void PlayGame()
     {
         SceneManager.LoadScene("MainMenu");
@@ -69,7 +68,6 @@ public class HomeUI : MonoBehaviour
         if (SettingsManager.instance != null)
             SettingsManager.instance.SetSfxVolume(value);
     }
-
 
     public void QuitGame()
     {
