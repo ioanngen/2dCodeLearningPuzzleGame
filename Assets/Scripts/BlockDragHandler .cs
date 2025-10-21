@@ -1,21 +1,26 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 [RequireComponent(typeof(RectTransform), typeof(CanvasGroup))]
 public class BlockDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [Tooltip("Unique integer ID for this block")]
     public int blockID;
 
     [HideInInspector] public Transform originalParent;
     [HideInInspector] public Vector2 originalAnchoredPos;
 
-    RectTransform rect;
-    CanvasGroup cg;
-    Canvas canvas;
-    BlockSequenceManager sequenceManager;
+    private RectTransform rect;
+    private Canvas canvas;
+    private CanvasGroup cg;
+    private BlockSequenceManager sequenceManager;
 
-    void Awake()
+    private bool isSnapped;
+    private bool hasMovedEnough;
+    private Vector2 dragStartPos;
+    private const float DRAG_THRESHOLD = 6f;
+
+    private void Awake()
     {
         rect = GetComponent<RectTransform>();
         cg = GetComponent<CanvasGroup>();
@@ -25,32 +30,73 @@ public class BlockDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        dragStartPos = eventData.position;
+        hasMovedEnough = false;
+
         originalParent = transform.parent;
         originalAnchoredPos = rect.anchoredPosition;
+
         cg.blocksRaycasts = false;
+        cg.alpha = 0.8f;
+
+        transform.SetParent(canvas.transform, true);
         transform.SetAsLastSibling();
+
+        sequenceManager?.OnBlockDragStart(this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (canvas == null) return;
+        if (!hasMovedEnough)
+        {
+            if (Vector2.Distance(eventData.position, dragStartPos) > DRAG_THRESHOLD)
+                hasMovedEnough = true;
+            else
+                return;
+        }
+
         rect.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         cg.blocksRaycasts = true;
+        cg.alpha = 1f;
 
-        bool snapped = false;
-        if (sequenceManager != null)
+        if (!hasMovedEnough)
         {
-            snapped = sequenceManager.TrySnap(this);
+            ReturnToOriginal();
+            return;
         }
 
-        if (!snapped)
+        RectTransform targetContainer = sequenceManager?.GetContainerUnderPointer(eventData);
+
+        if (targetContainer != null)
         {
-            transform.SetParent(originalParent);
-            rect.anchoredPosition = originalAnchoredPos;
+            bool success = sequenceManager.TryDropBlock(this, targetContainer);
+            if (success)
+            {
+                transform.SetParent(targetContainer, false);
+                sequenceManager.UpdateBlockOrder(this, targetContainer);
+                isSnapped = true;
+            }
+            else
+            {
+                StartCoroutine(sequenceManager.FlashRedFeedback(this));
+                ReturnToOriginal();
+            }
         }
+        else
+        {
+            ReturnToOriginal();
+        }
+
+    }
+
+    public void ReturnToOriginal()
+    {
+        transform.SetParent(originalParent, false);
+        rect.anchoredPosition = originalAnchoredPos;
+        isSnapped = false;
     }
 }
