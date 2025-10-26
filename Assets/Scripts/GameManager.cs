@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     public GameObject resultPanel;
     public GameObject Panel;
+    public NoLivesPopup noLivesPopup;
     public Text resultText;
     public Text timeText;
     public Image[] starImages;   // 3 stars
@@ -102,17 +103,14 @@ public class GameManager : MonoBehaviour
 
     public void TryAgain()
     {
-        if (LivesManager.Instance != null)
-            LivesManager.Instance.LoseLife();
+        if (!LivesManager.Instance.HasLives())
+        {
+            noLivesPopup.ShowPopup();
+            return;
+        }
 
-        if (LivesManager.Instance.HasLives())
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        else
-        {
-            SceneManager.LoadScene("MainMenu");
-        }
+        LivesManager.Instance.LoseLife();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ExitToMap()

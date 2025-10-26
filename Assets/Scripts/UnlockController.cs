@@ -4,10 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class UnlockController : MonoBehaviour
 {
-    [Tooltip("Assign UnlockAnimation components in level order (index 0 = unlocks level 1->2, index 1 = 2->3, ...).")]
     public UnlockAnimation[] animations;
-
-    [Tooltip("Name of map scene as appears in Build Settings")]
     public string mapSceneName = "MainMenu";
 
     IEnumerator Start()

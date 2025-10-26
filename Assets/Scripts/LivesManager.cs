@@ -17,6 +17,7 @@ public class LivesManager : MonoBehaviour
     public TMP_Text timerText;
     public GameObject timerPanel;
 
+
     private void Awake()
     {
         if (Instance == null)
