@@ -52,6 +52,11 @@ public class GameManager : MonoBehaviour
         levelSuccess = success;
 
         float timeTaken = Time.time - levelStartTime;
+
+        PauseManager pause = FindAnyObjectByType<PauseManager>();
+        if (pause != null)
+            timeTaken -= pause.GetTotalPausedTime();
+
         resultPanel.SetActive(true);
         Panel.SetActive(true);
 
@@ -64,7 +69,6 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i < starImages.Length; i++)
                 starImages[i].sprite = (i < stars) ? starOn : starOff;
 
-            
             string currentLevel = SceneManager.GetActiveScene().name;
             int prevStars = PlayerPrefs.GetInt("Lv" + currentLevel, 0);
             if (stars > prevStars)
@@ -88,6 +92,7 @@ public class GameManager : MonoBehaviour
             nextLevelButton.gameObject.SetActive(false);
         }
     }
+
 
     private int CalculateStars(float time)
     {
@@ -115,9 +120,26 @@ public class GameManager : MonoBehaviour
 
     public void ExitToMap()
     {
-        if (!levelSuccess && LivesManager.Instance != null)
-            LivesManager.Instance.LoseLife();
+        ConfirmLifeUsage pp = FindFirstObjectByType<ConfirmLifeUsage>();
 
-        SceneManager.LoadScene("MainMenu");
+        if (pp != null)
+        {
+            pp.ShowPopup(() =>
+            {
+                LivesManager.Instance.LoseLife();
+                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+            });
+        }
+        else
+        {
+            Debug.LogWarning("ConfirmLifeUsePopup not assigned in GameManager!");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
     }
+    public void Exit()
+    {
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+    }
+
 }
