@@ -9,16 +9,14 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     public GameObject resultPanel;
     public GameObject Panel;
-    public NoLivesPopup noLivesPopup;
     public Text resultText;
     public Text timeText;
-    public Image[] starImages;   // 3 stars
+    public Image[] starImages;
     public Sprite starOn;
     public Sprite starOff;
     public Button tryAgainButton;
     public Button nextLevelButton;
     public Button exitButton;
-
 
     private float levelStartTime;
     private bool levelEnded = false;
@@ -71,11 +69,17 @@ public class GameManager : MonoBehaviour
 
             string currentLevel = SceneManager.GetActiveScene().name;
             int prevStars = PlayerPrefs.GetInt("Lv" + currentLevel, 0);
+
+            int starsEarned = stars;
+
             if (stars > prevStars)
             {
                 PlayerPrefs.SetInt("Lv" + currentLevel, stars);
                 PlayerPrefs.Save();
             }
+
+            if (StarManager.Instance != null)
+                StarManager.Instance.AddStars(starsEarned);
 
             tryAgainButton.gameObject.SetActive(false);
             nextLevelButton.gameObject.SetActive(true);
@@ -93,7 +97,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     private int CalculateStars(float time)
     {
         if (time < 10f) return 3;
@@ -110,7 +113,7 @@ public class GameManager : MonoBehaviour
     {
         if (!LivesManager.Instance.HasLives())
         {
-            noLivesPopup.ShowPopup();
+            ToastManager.Instance.ShowMessage("Lo Lives Left!");
             return;
         }
 
@@ -126,9 +129,10 @@ public class GameManager : MonoBehaviour
         {
             pp.ShowPopup(() =>
             {
-                LivesManager.Instance.LoseLife();
                 UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
             });
+
+            LivesManager.Instance.LoseLife();
         }
         else
         {

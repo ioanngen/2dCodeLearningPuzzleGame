@@ -1,28 +1,30 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UnlockAnimation : MonoBehaviour
 {
-    [Header("Unlock Setup")]
+    [Header("Dots Path")]
     public GameObject[] dots;
+
+    [Header("Level Button")]
     public Button levelButton;
-    public float dotDelay = 0.16f;
 
-    [HideInInspector] public string levelKey;
+    [Header("Animation")]
+    public float dotDelay = 0.15f;
 
-    private bool hasPlayed = false;
+    private string levelKey;
+    private bool hasPlayed;
 
     private void Awake()
     {
-        if (!string.IsNullOrEmpty(levelKey))
-        {
-            hasPlayed = PlayerPrefs.GetInt("PlayedUnlockAnim_" + levelKey, 0) == 1;
-        }
+        levelKey = "Level" + gameObject.name;
+
+        hasPlayed = PlayerPrefs.GetInt("UnlockPlayed_" + levelKey, 0) == 1;
 
         if (hasPlayed)
         {
-            ShowDotsInstantly();
+            ShowDotsInstant();
         }
         else
         {
@@ -33,20 +35,16 @@ public class UnlockAnimation : MonoBehaviour
     private void HideDots()
     {
         foreach (var d in dots)
-        {
             if (d != null) d.SetActive(false);
-        }
 
         if (levelButton != null)
             levelButton.interactable = false;
     }
 
-    private void ShowDotsInstantly()
+    private void ShowDotsInstant()
     {
         foreach (var d in dots)
-        {
             if (d != null) d.SetActive(true);
-        }
 
         if (levelButton != null)
             levelButton.interactable = true;
@@ -54,14 +52,17 @@ public class UnlockAnimation : MonoBehaviour
 
     public void Play()
     {
-        if (hasPlayed) return;
-        StartCoroutine(ShowDotsCoroutine());
+        if (hasPlayed)
+            return;
+
+        StartCoroutine(PlayAnimation());
     }
 
-    public IEnumerator ShowDotsCoroutine()
+    private IEnumerator PlayAnimation()
     {
         hasPlayed = true;
-        PlayerPrefs.SetInt("PlayedUnlockAnim_" + levelKey, 1);
+
+        PlayerPrefs.SetInt("UnlockPlayed_" + levelKey, 1);
         PlayerPrefs.Save();
 
         if (levelButton != null)

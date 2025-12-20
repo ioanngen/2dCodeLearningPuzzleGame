@@ -1,11 +1,21 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System;
 
 public class SettingsManager : MonoBehaviour
 {
     public static SettingsManager instance;
 
-    [Range(0f, 1f)] public float musicVolume = 1f;
-    [Range(0f, 1f)] public float sfxVolume = 1f;
+    public float musicVolume = 1f;
+    public float sfxVolume = 1f;
+
+    // Events
+    public event Action<float> OnMusicVolumeChanged;
+    public event Action<float> OnSFXVolumeChanged;
+
+    // Current UI sliders
+    private Slider musicSlider;
+    private Slider sfxSlider;
 
     private void Awake()
     {
@@ -23,21 +33,36 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
+    // Called by each scene’s UI script
+    public void RegisterSliders(Slider music, Slider sfx)
+    {
+        musicSlider = music;
+        sfxSlider = sfx;
+
+        if (musicSlider != null)
+            musicSlider.value = musicVolume;
+
+        if (sfxSlider != null)
+            sfxSlider.value = sfxVolume;
+    }
+
     public void SetMusicVolume(float value)
     {
         musicVolume = value;
         PlayerPrefs.SetFloat("MusicVolume", value);
         PlayerPrefs.Save();
 
-        // AudioManager.instance.UpdateMusicVolume(value);
+        OnMusicVolumeChanged?.Invoke(value);
+        AudioManager.instance.UpdateMusicVolume(value);
     }
 
-    public void SetSfxVolume(float value)
+    public void SetSFXVolume(float value)
     {
         sfxVolume = value;
         PlayerPrefs.SetFloat("SFXVolume", value);
         PlayerPrefs.Save();
 
-        // AudioManager.instance.UpdateSFXVolume(value);
+        OnSFXVolumeChanged?.Invoke(value);
+        AudioManager.instance.UpdateSFXVolume(value);
     }
 }

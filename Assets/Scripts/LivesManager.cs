@@ -9,7 +9,7 @@ public class LivesManager : MonoBehaviour
 
     public int maxLives = 5;
     public int currentLives;
-    public float regenTime = 1200f; // 20 minutes
+    public float regenTime = 1200f;
     private DateTime nextLifeTime;
 
     [Header("UI References (Map Scene Only)")]

@@ -7,6 +7,9 @@ TagManager:
   - LivesText
   - TimerPanel
   - TimerText
+  - TotalStarsText
+  - AddLifeButton
+  - NextWorldButton
   layers:
   - Default
   - TransparentFX

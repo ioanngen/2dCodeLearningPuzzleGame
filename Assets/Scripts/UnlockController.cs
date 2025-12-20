@@ -1,37 +1,39 @@
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UnlockController : MonoBehaviour
 {
     public UnlockAnimation[] animations;
-    public string mapSceneName = "MainMenu";
 
-    IEnumerator Start()
+    private void Start()
     {
         string last = PlayerPrefs.GetString("LastCompletedLevel", "");
-        if (string.IsNullOrEmpty(last)) yield break;
+        if (string.IsNullOrEmpty(last))
+            return;
 
-        int lastIndex = int.Parse(last);
-        int nextIndex = lastIndex + 1;
+        int lastCompleted = int.Parse(last);
+        int nextLevelIndex = lastCompleted + 1;
 
-        int loadNextFlag = PlayerPrefs.GetInt("LoadNextLevel", 0);
-
-        if (nextIndex - 1 >= 0 && nextIndex - 1 < animations.Length)
+        if (nextLevelIndex - 1 >= 0 && nextLevelIndex - 1 < animations.Length)
         {
-            var anim = animations[nextIndex - 1];
+            UnlockAnimation anim = animations[nextLevelIndex - 1];
             if (anim != null)
             {
-                yield return StartCoroutine(anim.ShowDotsCoroutine());
+                anim.Play();
             }
         }
 
-        if (loadNextFlag == 1)
+        if (PlayerPrefs.GetInt("LoadNextLevel", 0) == 1)
         {
             PlayerPrefs.SetInt("LoadNextLevel", 0);
             PlayerPrefs.Save();
 
-            SceneManager.LoadScene(nextIndex.ToString());
+            SceneManager.LoadScene(nextLevelIndex.ToString());
         }
+    }
+
+    public void GoToMap1()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }

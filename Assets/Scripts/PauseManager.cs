@@ -10,7 +10,6 @@ public class PauseManager : MonoBehaviour
     public Button resumeButton;
     public Button restartButton;
     public Button settingsButton;
-    public NoLivesPopup noLivesPopup;
 
     private bool isPaused = false;
     private float pauseStartTime;
@@ -24,7 +23,6 @@ public class PauseManager : MonoBehaviour
 
     private void Update()
     {
-        // Pause with Escape key
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused) ResumeGame();
@@ -38,7 +36,7 @@ public class PauseManager : MonoBehaviour
 
         isPaused = true;
         pauseStartTime = Time.time;
-        Time.timeScale = 0f; // Stop all in-game time
+        Time.timeScale = 0f;
 
         pausePopup.SetActive(true);
         StartCoroutine(AnimatePopupIn());
@@ -66,7 +64,7 @@ public class PauseManager : MonoBehaviour
         float t = 0f;
         while (t < 1f)
         {
-            t += Time.unscaledDeltaTime * 3f; // unscaled time because Time.timeScale = 0
+            t += Time.unscaledDeltaTime * 3f;
             popupCanvasGroup.alpha = Mathf.Lerp(0f, 1f, t);
             popupCanvasGroup.transform.localScale = Vector3.Lerp(Vector3.one * 0.8f, Vector3.one, t);
             yield return null;
@@ -81,7 +79,7 @@ public class PauseManager : MonoBehaviour
 
         if (!LivesManager.Instance.HasLives())
         {
-            noLivesPopup.ShowPopup();
+            ToastManager.Instance.ShowMessage("Lo Lives Left!");
             return;
         }
         else
