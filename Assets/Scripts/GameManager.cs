@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
 
     [Header("UI References")]
     public GameObject resultPanel;
-    public GameObject Panel;
     public Text resultText;
     public Text timeText;
     public Image[] starImages;
@@ -56,7 +55,6 @@ public class GameManager : MonoBehaviour
             timeTaken -= pause.GetTotalPausedTime();
 
         resultPanel.SetActive(true);
-        Panel.SetActive(true);
 
         if (success)
         {
