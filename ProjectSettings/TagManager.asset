@@ -10,6 +10,11 @@ TagManager:
   - TotalStarsText
   - AddLifeButton
   - NextWorldButton
+  - ToastPanel
+  - ToastText
+  - Music
+  - Sfx
+  - PreviousWorldButton
   layers:
   - Default
   - TransparentFX

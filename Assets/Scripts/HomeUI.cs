@@ -6,13 +6,14 @@ public class HomeUI : MonoBehaviour
 {
     public void PlayGame()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         SceneManager.LoadScene("MainMenu");
         PlayerPrefs.DeleteAll();
     }
 
     public void QuitGame()
     {
-        Debug.Log("Quitting Game...");
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         Application.Quit();
     }
 }

@@ -56,12 +56,14 @@ public class ConfirmLifeUsage : MonoBehaviour
 
     public void OnYesClicked()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         onConfirmAction?.Invoke();
         HidePopup();
     }
 
     public void OnNoClicked()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         HidePopup();
     }
 

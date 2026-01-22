@@ -32,6 +32,7 @@ public class PauseManager : MonoBehaviour
 
     public void PauseGame()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         if (pausePopup == null) return;
 
         isPaused = true;
@@ -44,6 +45,7 @@ public class PauseManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         if (!isPaused) return;
 
         isPaused = false;
@@ -73,6 +75,7 @@ public class PauseManager : MonoBehaviour
 
     public void RestartLevel()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         ConfirmLifeUsage pp = FindFirstObjectByType<ConfirmLifeUsage>();
 
         Time.timeScale = 1f;
@@ -95,6 +98,7 @@ public class PauseManager : MonoBehaviour
 
     public void OpenSettings()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         GameObject settingsPanel = GameObject.FindWithTag("SettingsPanel");
         if (settingsPanel != null)
             settingsPanel.SetActive(true);

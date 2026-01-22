@@ -36,4 +36,9 @@ public class UnlockController : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenu");
     }
+
+    public void GoToHome()
+    {
+        SceneManager.LoadScene("Home");
+    }
 }

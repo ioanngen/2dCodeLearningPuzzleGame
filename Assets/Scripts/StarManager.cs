@@ -130,7 +130,6 @@ public class StarManager : MonoBehaviour
         if (addLifeButton != null && LivesManager.Instance != null)
         {
             bool canAddLife = LivesManager.Instance.currentLives < LivesManager.Instance.maxLives;
-            addLifeButton.interactable = canAddLife;
 
             var img = addLifeButton.GetComponent<Image>();
             if (img != null)
@@ -164,9 +163,9 @@ public class StarManager : MonoBehaviour
 
     public void TryUnlockNextWorld()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         if (CanUnlockNextWorld())
         {
-            Debug.Log("Next world unlocked!");
             GoToMap2();
         }
         else
@@ -177,6 +176,7 @@ public class StarManager : MonoBehaviour
 
     public void GoToMap2()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         SceneManager.LoadScene("MainMenu 2");
     }
 

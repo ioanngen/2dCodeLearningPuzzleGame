@@ -76,12 +76,14 @@ public class BlockDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             bool success = sequenceManager.TryDropBlock(this, targetContainer);
             if (success)
             {
+                AudioManager.Instance.PlaySFX(SFXType.AttachBlock);
                 transform.SetParent(targetContainer, false);
                 sequenceManager.UpdateBlockOrder(this, targetContainer);
                 isSnapped = true;
             }
             else
             {
+                AudioManager.Instance.PlaySFX(SFXType.WrongBlock);
                 StartCoroutine(sequenceManager.FlashRedFeedback(this));
                 ReturnToOriginal();
             }

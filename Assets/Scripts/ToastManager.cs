@@ -29,7 +29,7 @@ public class ToastManager : MonoBehaviour
     private IEnumerator ShowRoutine(float duration)
     {
         canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = false; // 👈 IMPORTANT
+        canvasGroup.blocksRaycasts = false;
         yield return new WaitForSecondsRealtime(duration);
         HideInstant();
     }

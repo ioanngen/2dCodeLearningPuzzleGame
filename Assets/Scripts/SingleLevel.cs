@@ -8,11 +8,13 @@ public class SingleLevel : MonoBehaviour
 
     public void BackButton()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         SceneManager.LoadScene("MainMenu");
     }
 
     public void PressStarsButton(int _starsNum)
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         currentStarsNum = _starsNum;
 
         if(currentStarsNum > PlayerPrefs.GetInt("Lv" + levelIndex))

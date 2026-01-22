@@ -64,6 +64,8 @@ public class LevelSelection : MonoBehaviour
 
     public void PressSelection(string levelName)
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
+
         if (!unlocked)
             return;
 

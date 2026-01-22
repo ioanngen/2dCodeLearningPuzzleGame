@@ -9,11 +9,9 @@ public class SettingsManager : MonoBehaviour
     public float musicVolume = 1f;
     public float sfxVolume = 1f;
 
-    // Events
     public event Action<float> OnMusicVolumeChanged;
     public event Action<float> OnSFXVolumeChanged;
 
-    // Current UI sliders
     private Slider musicSlider;
     private Slider sfxSlider;
 
@@ -33,7 +31,6 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    // Called by each scene’s UI script
     public void RegisterSliders(Slider music, Slider sfx)
     {
         musicSlider = music;
@@ -53,7 +50,7 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.Save();
 
         OnMusicVolumeChanged?.Invoke(value);
-        AudioManager.instance.UpdateMusicVolume(value);
+        AudioManager.Instance.UpdateSFXVolume(value);
     }
 
     public void SetSFXVolume(float value)
@@ -63,6 +60,6 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.Save();
 
         OnSFXVolumeChanged?.Invoke(value);
-        AudioManager.instance.UpdateSFXVolume(value);
+        AudioManager.Instance.UpdateSFXVolume(value);
     }
 }

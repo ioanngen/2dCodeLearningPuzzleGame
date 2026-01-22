@@ -34,6 +34,7 @@ public class LevelHelper : MonoBehaviour
 
     public void Next()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         if (index == balloonTexts.Length - 1)
         {
             controller.CloseHelper();
@@ -46,6 +47,7 @@ public class LevelHelper : MonoBehaviour
 
     public void Previous()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         if (index <= 0) return;
 
         index--;

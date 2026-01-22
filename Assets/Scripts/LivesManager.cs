@@ -23,7 +23,7 @@ public class LivesManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
             LoadLivesData();
         }
         else
@@ -35,7 +35,7 @@ public class LivesManager : MonoBehaviour
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        if (SceneManager.GetActiveScene().name == "MainMenu")
+        if (SceneManager.GetActiveScene().name == "MainMenu" || SceneManager.GetActiveScene().name == "MainMenu 2")
         {
             FindUIReferences();
             UpdateUI();
@@ -49,7 +49,7 @@ public class LivesManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainMenu")
+        if (scene.name == "MainMenu" || SceneManager.GetActiveScene().name == "MainMenu 2")
         {
             FindUIReferences();
             UpdateUI();
@@ -106,6 +106,7 @@ public class LivesManager : MonoBehaviour
 
     public void AddLife()
     {
+        AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         if (currentLives < maxLives)
         {
             currentLives++;
@@ -148,7 +149,6 @@ public class LivesManager : MonoBehaviour
 
     private void FindUIReferences()
     {
-        // Find UI only in the Map scene
         var livesObj = GameObject.FindWithTag("LivesText");
         var timerObj = GameObject.FindWithTag("TimerText");
         var panelObj = GameObject.FindWithTag("TimerPanel");

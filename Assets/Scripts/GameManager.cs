@@ -37,7 +37,6 @@ public class GameManager : MonoBehaviour
         if (resultPanel != null)
             resultPanel.SetActive(false);
 
-        // Button listeners
         if (tryAgainButton != null) tryAgainButton.onClick.AddListener(TryAgain);
         if (nextLevelButton != null) nextLevelButton.onClick.AddListener(NextLevel);
     }
@@ -58,6 +57,7 @@ public class GameManager : MonoBehaviour
 
         if (success)
         {
+            AudioManager.Instance.PlaySFX(SFXType.LevelWin);
             resultText.text = "Level Complete!";
             timeText.text = $"Time: {timeTaken:F1}s";
 
@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            AudioManager.Instance.PlaySFX(SFXType.LevelFail);
             resultText.text = "Try Again!";
             timeText.text = "";
 
@@ -102,10 +103,46 @@ public class GameManager : MonoBehaviour
         return 1;
     }
 
+    private int GetCurrentLevelNumber()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        string digits = "";
+
+        foreach (char c in sceneName)
+        {
+            if (char.IsDigit(c))
+                digits += c;
+        }
+
+        if (int.TryParse(digits, out int levelNumber))
+            return levelNumber;
+
+        return -1;
+    }
+
+
     public void NextLevel()
     {
-        SceneManager.LoadScene("MainMenu");
+        int currentLevel = GetCurrentLevelNumber();
+
+        if (currentLevel == -1)
+        {
+            Debug.LogError("Could not determine level number!");
+            SceneManager.LoadScene("MainMenu");
+            return;
+        }
+
+        if (currentLevel < 14)
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenu 2");
+        }
     }
+
 
     public void TryAgain()
     {
@@ -127,21 +164,19 @@ public class GameManager : MonoBehaviour
         {
             pp.ShowPopup(() =>
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+                NextLevel();
             });
 
             LivesManager.Instance.LoseLife();
         }
         else
         {
-            Debug.LogWarning("ConfirmLifeUsePopup not assigned in GameManager!");
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+            NextLevel();
         }
     }
     public void Exit()
     {
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        NextLevel();
     }
 
 }
