@@ -23,7 +23,7 @@ public class LivesManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
             LoadLivesData();
         }
         else

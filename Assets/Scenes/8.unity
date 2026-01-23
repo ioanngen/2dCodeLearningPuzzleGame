@@ -4097,7 +4097,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   containers:
   - container: {fileID: 1206515386}
-    requireCorrectOrder: 0
+    requireCorrectOrder: 1
     correctOrder: 0000000001000000020000000300000004000000050000000600000007000000
 --- !u!114 &7920328825953968471
 MonoBehaviour:

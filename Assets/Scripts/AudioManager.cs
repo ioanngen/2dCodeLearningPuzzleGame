@@ -97,6 +97,6 @@ public class AudioManager : MonoBehaviour
 
     public void UpdateSFXVolume(float value)
     {
-        musicSource.volume = value;
+        sfxSource.volume = value;
     }
 }

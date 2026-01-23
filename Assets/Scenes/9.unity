@@ -1063,7 +1063,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3204149257286698243, guid: b2ae9f818ad494d488afc2259aeaee57, type: 3}
+  m_Sprite: {fileID: -2938350706208118167, guid: 2db6bb989c9c84141bb142b6ae43f0c4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5120,7 +5120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   containers:
   - container: {fileID: 1206515386}
-    requireCorrectOrder: 0
+    requireCorrectOrder: 1
     correctOrder: 00000000010000000200000003000000040000000500000006000000070000000800000009000000
 --- !u!114 &7920328825953968471
 MonoBehaviour:

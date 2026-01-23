@@ -50,7 +50,7 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.Save();
 
         OnMusicVolumeChanged?.Invoke(value);
-        AudioManager.Instance.UpdateSFXVolume(value);
+        AudioManager.Instance.UpdateMusicVolume(value);
     }
 
     public void SetSFXVolume(float value)
