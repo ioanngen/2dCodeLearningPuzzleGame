@@ -11,7 +11,6 @@ public class LevelHelperController : MonoBehaviour
 
     private void Awake()
     {
-        // Get level number from scene name
         string sceneName = SceneManager.GetActiveScene().name;
         int.TryParse(sceneName, out levelNumber);
     }

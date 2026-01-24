@@ -56,7 +56,6 @@ public class LevelHelper : MonoBehaviour
 
     private void RefreshUI()
     {
-        // Stop previous typing animation
         if (typingRoutine != null)
             StopCoroutine(typingRoutine);
 
@@ -64,7 +63,6 @@ public class LevelHelper : MonoBehaviour
 
         typingRoutine = StartCoroutine(TypeText(balloonTexts[index]));
 
-        // Previous button only when possible
         prevButton.gameObject.SetActive(index > 0);
 
     }

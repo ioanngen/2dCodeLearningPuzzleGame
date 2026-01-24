@@ -5483,7 +5483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unlocked: 0
-  unlockImage: {fileID: 340648944}
+  unlockImage: {fileID: 123766216}
   stars:
   - {fileID: 80457609}
   - {fileID: 2137157912}

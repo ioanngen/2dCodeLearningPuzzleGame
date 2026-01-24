@@ -8,7 +8,6 @@ public class HomeUI : MonoBehaviour
     {
         AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         SceneManager.LoadScene("MainMenu");
-        PlayerPrefs.DeleteAll();
     }
 
     public void QuitGame()

@@ -12,7 +12,7 @@ public class LivesManager : MonoBehaviour
     public float regenTime = 1200f;
     private DateTime nextLifeTime;
 
-    [Header("UI References (Map Scene Only)")]
+    [Header("UI References")]
     public TMP_Text livesText;
     public TMP_Text timerText;
     public GameObject timerPanel;

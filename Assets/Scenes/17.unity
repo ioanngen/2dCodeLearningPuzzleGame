@@ -307,7 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f89ea8fc3fc24444a3991462c19247a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockID: 2
+  blockID: 3
   originalParent: {fileID: 0}
   originalAnchoredPos: {x: 0, y: 0}
 --- !u!225 &81201818
@@ -1246,7 +1246,6 @@ GameObject:
   - component: {fileID: 602263301}
   - component: {fileID: 602263300}
   - component: {fileID: 602263299}
-  - component: {fileID: 602263303}
   - component: {fileID: 602263305}
   - component: {fileID: 602263304}
   m_Layer: 5
@@ -1361,19 +1360,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &602263303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 602263298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b802e6f6c042dc4e933602575b068de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelIndex: 0
 --- !u!114 &602263304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1891,7 +1877,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 55.030567, y: 1.8498669, z: 0.5637741, w: 0}
+  m_margin: {x: 79.7798, y: 1.8498669, z: 0.5637741, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

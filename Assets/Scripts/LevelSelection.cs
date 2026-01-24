@@ -34,7 +34,7 @@ public class LevelSelection : MonoBehaviour
 
             if (unlockAnim != null)
             {
-                unlockAnim.Play(); // safe to call every time
+                unlockAnim.Play();
             }
         }
     }
