@@ -15,4 +15,9 @@ public class HomeUI : MonoBehaviour
         AudioManager.Instance?.PlaySFX(SFXType.ButtonClick);
         Application.Quit();
     }
+
+    public void ResetGame()
+    {
+        PlayerPrefs.DeleteAll();
+    }
 }
