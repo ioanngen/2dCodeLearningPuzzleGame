@@ -4998,7 +4998,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5307416426209129646, guid: 7f2a4ac81c41dca48941b68070a6a71e, type: 3}
       propertyPath: 'balloonTexts.Array.data[0]'
-      value: "Congratulations \u2014 with this you will complete World 1! \U0001F389"
+      value: "Congratulations \u2014 with this you will complete World 1!"
       objectReference: {fileID: 0}
     - target: {fileID: 5307416426209129646, guid: 7f2a4ac81c41dca48941b68070a6a71e, type: 3}
       propertyPath: 'balloonTexts.Array.data[1]'
